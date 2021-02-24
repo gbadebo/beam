@@ -109,12 +109,29 @@ If your pipeline uses non-Python packages (e.g. packages that require installati
 
 2. If you are using a PyPI package that depends on non-Python dependencies, add `['pip', 'install', '<your PyPI package>']` to the list of `CUSTOM_COMMANDS` in your `setup.py` file.
 
+3. If you have other files you want to include as data files to be read by your pipeline you can specify the parameters `include_package_data` and `data_files` in you setup.py 
+
+        setuptools.setup(
+            install_requires=REQUIRED_PACKAGES,
+            packages=setuptools.find_packages(),
+            include_package_data=True,
+            data_files=[('dependency', ['src/data/file1']), ('dependency', ['src/data/file2'])], 
+            cmdclass={
+                # Command class instantiated and run during pip install scenarios.
+                'build': build,
+                'CustomCommands': CustomCommands,
+            }) 
+
 3. Structure your project so that the root directory contains the `setup.py` file, the main workflow file, and a directory with the rest of the files.
 
         root_dir/
           setup.py
           main.py
           other_files_dir/
+          src/
+                data/file1
+                data/file2
+                
 
     See the [Juliaset](https://github.com/apache/beam/tree/master/sdks/python/apache_beam/examples/complete/juliaset) project for an example that follows this required project structure.
 
